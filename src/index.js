@@ -1,26 +1,22 @@
-const express = require('express');
+import 'dotenv/config';
+import handleGreetings from './greetings.js';
+import handleDogFacts from './dogFacts.js';
+import cors from 'cors';
+import express from 'express';
+
+
 const app = express();
-const port = 3000;
-const name = "Node.js";
+
+app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Hello World, ' + name + '!');
+  res.send('Hello, node.js!');
 })
 
-// app.get('/hello', function (req, res) {
-//   res.send('Hello World, ' + name + '!');
-// })
+app.get('/hello/:name?', handleGreetings)
 
-app.get('/hello/:name?', function (req, res) {
-  if(req.params.name) {
-    const message = 'Hello World, ' + req.params.name + '!';
-    res.send(message);
-  } else {
-    res.send('Hello World');
-  }
-  
-})
+app.get('/dog-facts/', handleDogFacts)
 
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server started at http://localhost:${process.env.PORT}`);
 })
