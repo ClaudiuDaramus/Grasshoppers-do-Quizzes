@@ -1,26 +1,28 @@
-const express = require('express');
+import 'dotenv/config';
+import express from 'express';
+import bodyParser from 'body-parser';
+
+import handleGreetings from './controllers/greetings.js';
+import handleDogFacts from './controllers/dogFacts.js';
+import loginHandler from './controllers/login.js';
+import authorizationMiddleware from './middlewares/authorization.js';
+
 const app = express();
-const port = 3000;
-const name = "Node.js";
+
+app.use(bodyParser.json());
+
+app.post("/login", loginHandler);
 
 app.get('/', (req, res) => {
-  res.send('Hello World, ' + name + '!');
+  res.send('Hello, node.js!');
 })
 
-// app.get('/hello', function (req, res) {
-//   res.send('Hello World, ' + name + '!');
-// })
+app.get("/hello", authorizationMiddleware, handleGreetings);
 
-app.get('/hello/:name?', function (req, res) {
-  if(req.params.name) {
-    const message = 'Hello World, ' + req.params.name + '!';
-    res.send(message);
-  } else {
-    res.send('Hello World');
-  }
-  
-})
+app.get("/hello/:name?", authorizationMiddleware, handleGreetings);
 
-app.listen(port, () => {
-  console.log(`Server started at http://localhost:${port}`);
+app.get('/dog-facts/', authorizationMiddleware, handleDogFacts)
+
+app.listen(process.env.PORT, () => {
+  console.log(`Server started at http://localhost:${process.env.PORT}`);
 })
