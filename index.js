@@ -1,7 +1,7 @@
 const express = require('express')
 const graphql = require('express-graphql')
 const app = express()
-
+require('dotenv/config')
 app.use(express.json())
 
 const db = require('./models')
@@ -30,6 +30,6 @@ app.use("/graphql", graphql.graphqlHTTP((req, res, params) => {
     await user.save()
     res.send({})
 }) */
-app.listen(5000, () => {
-    console.log("Server running at http://localhost:5000/")
+app.listen(process.env.PORT, () => {
+    console.log(`Server running at http://localhost:${process.env.PORT}/`)
 })
