@@ -1,4 +1,5 @@
-const {GraphQLString, GraphQLNonNull} = require('graphql')
+const { GraphQLString, GraphQLNonNull } = require('graphql')
+const {hash, verify} = require('../../crypt/hash')
 const db = require('../../models')
 const userType = require('../types/userType')
 module.exports = {
@@ -9,6 +10,9 @@ module.exports = {
             name: { type: new GraphQLNonNull(GraphQLString) },
             password: { type: new GraphQLNonNull(GraphQLString) }
         },
-        resolve: async (_, args) => db.User.create(args)
+        resolve: async (_, args) => {
+            const password = await hash(args.password)
+            return await db.User.create({...args, password})
+        }
     }
 }

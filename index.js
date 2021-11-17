@@ -3,8 +3,7 @@ const graphql = require('express-graphql')
 const app = express()
 require('dotenv/config')
 app.use(express.json())
-
-const db = require('./models')
+const authorize = require('./graphql/authorize')
 const schema = require('./graphql')
 
 /* app.get("/", async (req, res) => {
@@ -12,11 +11,10 @@ const schema = require('./graphql')
     res.send({})
 }) */
 
-app.use("/graphql", graphql.graphqlHTTP((req, res, params) => {
+app.use("/graphql", graphql.graphqlHTTP(async (req, res, params) => {
     return {
         schema,
-        context: {},
-        
+        context: {id: await authorize(req)},
         graphiql: true,
     }
 
@@ -31,5 +29,5 @@ app.use("/graphql", graphql.graphqlHTTP((req, res, params) => {
     res.send({})
 }) */
 app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}/`)
+    console.log(`Make queries at http://localhost:${process.env.PORT}/graphql`)
 })
