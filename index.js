@@ -21,10 +21,12 @@ app.put("/users/:id", updateUser);
 app.delete("/user/:id", deleteUser);
 
 
-app.use("/graphql", graphqlHTTP({
-  schema,
-  context: {},
-  graphiql: true,
+app.use("/graphql", graphqlHTTP((req, res, params) => {
+  return {  
+    schema,
+    context: {},
+    graphiql: true,
+  }
 }));
 
 app.listen(port, () => {
