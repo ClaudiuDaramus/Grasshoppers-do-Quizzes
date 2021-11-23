@@ -1,35 +1,32 @@
-const express = require('express')
-const graphql = require('express-graphql')
-const app = express()
-require('dotenv/config')
-app.use(express.json())
+const express = require('express');
+const bodyParser = require('body-parser');
 
-const db = require('./models')
-const schema = require('./graphql')
+const { port } = require('./config/express');
+const authorizationMiddleware = require('./middlewares/authorization');
+const loginHandler = require('./controllers/login');
+const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('./controllers/users');
 
-/* app.get("/", async (req, res) => {
-    console.log(await db.User.findAll())
-    res.send({})
-}) */
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./graphql');
 
-app.use("/graphql", graphql.graphqlHTTP((req, res, params) => {
-    return {
-        schema,
-        context: {},
-        
-        graphiql: true,
-    }
+const app = express();
+app.use(bodyParser.json());
 
-}))
+app.post("/login", loginHandler);
 
-/* app.post("/add", async (req, res) => {
-    const user = db.User.build({
-        name: "NewName",
-        email: "my@email.com"
-    })
-    await user.save()
-    res.send({})
-}) */
-app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}/`)
-})
+app.get("/users", getAllUsers);
+app.get("/users/:id", getUserById);
+app.post("/users", createUser);
+app.put("/users/:id", updateUser);
+app.delete("/user/:id", deleteUser);
+
+
+app.use("/graphql", graphqlHTTP({
+  schema,
+  context: {},
+  graphiql: true,
+}));
+
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});

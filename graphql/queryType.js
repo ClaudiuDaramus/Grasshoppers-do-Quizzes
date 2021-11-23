@@ -1,23 +1,34 @@
-const {
-    GraphQLObjectType,
-    GraphQLList,
-    GraphQLID,
-    GraphQLNonNull,
+const { 
+  GraphQLObjectType, 
+  GraphQLList,
+  GraphQLID,
+  GraphQLNonNull,
 } = require('graphql');
 const db = require('../models');
 
 const userType = require('./types/userType');
 
 const queryType = new GraphQLObjectType({
-    name: 'Query',
-    fields: () => {
-        return {
-            users: {
-                type: new GraphQLList(userType),
-                resolve: async () => await db.User.findAll()
-            }
+  name: 'Query',
+  fields: {
+    users: {
+      type: new GraphQLList(userType),
+      resolve: async () => {
+        return await db.User.findAll();
+      }
+    },
+    user: {
+      type: userType,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
         }
+      },
+      resolve: async (source, { id }) => {
+        return await db.User.findByPk(id);
+      }
     }
-})
+  }
+});
 
-module.exports = queryType
+module.exports = queryType;
