@@ -1,17 +1,15 @@
-const express = require('express')
-const graphql = require('express-graphql')
-const app = express()
-require('dotenv/config')
-app.use(express.json())
+
+const express = require('express');
+const { port } = require('./config/express');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./graphql');
 const authorize = require('./graphql/authorize')
-const schema = require('./graphql')
 
-/* app.get("/", async (req, res) => {
-    console.log(await db.User.findAll())
-    res.send({})
-}) */
+const app = express();
+app.use(express.json())
 
-app.use("/graphql", graphql.graphqlHTTP(async (req, res, params) => {
+
+app.use("/graphql", graphqlHTTP(async (req, res, params) => {
     return {
         schema,
         context: {id: await authorize(req)},
@@ -20,14 +18,6 @@ app.use("/graphql", graphql.graphqlHTTP(async (req, res, params) => {
 
 }))
 
-/* app.post("/add", async (req, res) => {
-    const user = db.User.build({
-        name: "NewName",
-        email: "my@email.com"
-    })
-    await user.save()
-    res.send({})
-}) */
-app.listen(process.env.PORT, () => {
-    console.log(`Make queries at http://localhost:${process.env.PORT}/graphql`)
+app.listen(port, () => {
+    console.log(`Make queries at http://localhost:${port}/graphql`)
 })

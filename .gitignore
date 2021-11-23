@@ -104,3 +104,6 @@ dist
 .tern-port
 storage/
 *.http
+
+# Webstorm files
+.idea

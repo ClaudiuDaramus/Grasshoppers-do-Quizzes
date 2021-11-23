@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const db = require('../models')
+const appJwt = require('../config/jwt')
 const { verify } = require('../crypt/hash')
 
 //Takes an email a password and returns a jwt : {email, password}
@@ -12,7 +13,7 @@ async function login(_, { email, password }) {
         }
         jwt.sign(
             { email, password },
-            process.env.JWT_SECRET,
+            appJwt.MY_SECRET_KEY,
             { algorithm: "HS512" },
             (err, token) => {
                 if (err) {

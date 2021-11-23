@@ -1,7 +1,5 @@
 const {
     GraphQLObjectType,
-    GraphQLList,
-    GraphQLID,
     GraphQLNonNull,
     GraphQLString,
 } = require('graphql');
@@ -14,10 +12,6 @@ const queryType = new GraphQLObjectType({
     name: 'Query',
     fields: () => {
         return {
-            /* users: {
-                type: new GraphQLList(userType),
-                resolve: async () => await db.User.findAll()
-            }, */
             login: {
                 type: loginType,
                 args: {
