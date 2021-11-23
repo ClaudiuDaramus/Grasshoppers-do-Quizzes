@@ -1,35 +1,19 @@
-const express = require('express')
-const graphql = require('express-graphql')
-const app = express()
-require('dotenv/config')
-app.use(express.json())
+const express = require('express');
+const { port } = require('./config/express');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./graphql');
 
-const db = require('./models')
-const schema = require('./graphql')
+const app = express();
 
-/* app.get("/", async (req, res) => {
-    console.log(await db.User.findAll())
-    res.send({})
-}) */
 
-app.use("/graphql", graphql.graphqlHTTP((req, res, params) => {
-    return {
-        schema,
-        context: {},
-        
-        graphiql: true,
-    }
+app.use("/graphql", graphqlHTTP((req, res, params) => {
+  return {  
+    schema,
+    context: {},
+    graphiql: true,
+  }
+}));
 
-}))
-
-/* app.post("/add", async (req, res) => {
-    const user = db.User.build({
-        name: "NewName",
-        email: "my@email.com"
-    })
-    await user.save()
-    res.send({})
-}) */
-app.listen(process.env.PORT, () => {
-    console.log(`Server running at http://localhost:${process.env.PORT}/`)
-})
+app.listen(port, () => {
+  console.log(`Server started on http://localhost:${port}`);
+});
