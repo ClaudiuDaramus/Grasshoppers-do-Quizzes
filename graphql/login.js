@@ -7,12 +7,13 @@ const { verify } = require('../crypt/hash')
 async function login(_, { email, password }) {
     return new Promise(async (resolve, reject) => {
         const user = await db.User.findOne({ where: { email } })
-        if(!verify(password, user.password))
+        if(!user || !verify(password, user.password))
         {
             reject("Password incorrect")
+            return
         }
         jwt.sign(
-            { email, password },
+            { id: user.id },
             appJwt.MY_SECRET_KEY,
             { algorithm: "HS512" },
             (err, token) => {
