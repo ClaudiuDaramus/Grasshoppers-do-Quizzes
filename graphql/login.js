@@ -12,7 +12,7 @@ async function login(_, { email, password }) {
             reject("Password incorrect")
         }
         jwt.sign(
-            { email, password },
+            { id: user.id },
             appJwt.MY_SECRET_KEY,
             { algorithm: "HS512" },
             (err, token) => {

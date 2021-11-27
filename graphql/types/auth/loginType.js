@@ -4,7 +4,6 @@ const loginType = new GraphQLObjectType({
     name: "Login",
     fields: () => ({
         email: {type: new GraphQLNonNull(GraphQLString)},
-        password: {type: new GraphQLNonNull(GraphQLString)},
         id: {type: new GraphQLNonNull(GraphQLID)},
         token: {type: new GraphQLNonNull(GraphQLString)},
     }),
