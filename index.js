@@ -8,11 +8,9 @@ const authorize = require('./graphql/authorize')
 const app = express();
 app.use(express.json())
 
-
-app.use("/graphql", graphqlHTTP(async (req, res, params) => {
+app.use("/graphql", authorize, graphqlHTTP(async (req, res, params) => {
     return {
         schema,
-        context: {id: await authorize(req)},
         graphiql: true,
     }
 
