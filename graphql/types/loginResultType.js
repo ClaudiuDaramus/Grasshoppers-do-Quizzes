@@ -1,6 +1,6 @@
 const { GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } = require('graphql')
 
-const loginType = new GraphQLObjectType({
+const loginResultType = new GraphQLObjectType({
     name: "Login",
     fields: () => ({
         email: {type: new GraphQLNonNull(GraphQLString)},
@@ -9,4 +9,4 @@ const loginType = new GraphQLObjectType({
     }),
 })
 
-module.exports = loginType
+module.exports = loginResultType
