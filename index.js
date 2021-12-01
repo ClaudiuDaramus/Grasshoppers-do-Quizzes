@@ -3,7 +3,7 @@ const express = require('express');
 const { port } = require('./config/express');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./graphql');
-const authorize = require('./graphql/authorize')
+const authorize = require('./middleware/authorize')
 
 const app = express();
 app.use(express.json())
