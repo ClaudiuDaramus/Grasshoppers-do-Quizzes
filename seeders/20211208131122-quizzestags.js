@@ -1,6 +1,4 @@
 'use strict';
-const { lorem } = require('faker');
-const faker = require('faker');
 const db = require('../models');
 
 module.exports = {

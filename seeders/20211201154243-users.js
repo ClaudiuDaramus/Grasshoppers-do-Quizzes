@@ -1,5 +1,4 @@
 'use strict';
-const { fake } = require('faker');
 const faker = require('faker');
 const hash = require("../crypt/hash");
 
