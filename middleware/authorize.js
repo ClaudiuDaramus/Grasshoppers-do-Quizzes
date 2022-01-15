@@ -12,19 +12,16 @@ async function authorize(req, res, next) {
     const token = header.split(" ")[1]
     jwt.verify(token, config.MY_SECRET_KEY, { algorithms: ["HS512"] }, async (err, token) => {
       if (err) {
-        console.log("No user, token error")
-        next()
+        res.status(401)
         return
       }
       console.log(`Token id = ${token.id}`)
       const user = await db.User.findByPk(token.id)
       if (!user) {
-        console.log("No user")
-        next()
+        res.status(401)
         return
       }
       req.user = user;
-      console.log(`userId = ${user.id}`)
       next()
     })
   } catch (e) {
