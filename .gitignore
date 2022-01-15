@@ -109,3 +109,4 @@ storage/
 .idea
 
 config/jwt.js
+.vscode/
