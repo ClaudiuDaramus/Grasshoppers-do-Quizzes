@@ -2,80 +2,69 @@ const db = require('../models');
 
 module.exports.getAllResults = async () => {
     try {
-        const allResults = await db.Quiz.findAll();
+        const allResults = await db.Result.findAll();
         return allResults;
     } catch (error) {
         console.error('Something went wrong');
         return null;
-    } 
+    }
 }
 
-module.exports.getQuizById = async (id) => {
-    return await db.Quiz.findByPk(id);
+module.exports.getResultById = async (id) => {
+    return await db.Result.findByPk(id);
 }
 
-module.exports.createResult= async (req, res) => {
-    const { title, description, quizId } = req.body;
+module.exports.createResult = async (req, res) => {
+    const { title } = req.body;
 
     try {
-        const newResult= await db.Quiz.create({
-            title,
-            description,
-            quizId
+        const newResult = await db.Result.create({
+            title
         });
 
-        res.status(201).send(newResult);
+        return newResult;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.updateResult= async (req, res) => {
-    const id = req.params.id;
-    const { title, description, quizId } = req.body;
+module.exports.updateResult = async (args, context) => {
+    const { id, title } = args;
 
     try {
-        const result = await db.Quiz.findByPk(id);
+        let result = await db.Result.findByPk(id);
 
         if(!result) {
-            throw `Resultwith id ${id} doesn't exist!`;
+            throw `Result with id ${id} doesn't exist!`;
         }
 
-        result = await db.Quiz.update({
+        await db.Result.update({
             title,
-            description,
-            quizId
         }, { where: { id } });
 
-        res.status(200).send(result);
+        return await db.Result.findByPk(id);
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.deleteResult= (req, res) => {
-    const { id } = req.params.id;
+module.exports.deleteResult = async (args, context) => {
+    const {id} = args;
 
     try {
-        const result = await db.Quiz.findByPk(id);
+        let result = await db.Result.findByPk(id);
 
-        if(!result) {
-            throw `Resultwith id ${id} doesn't exist!`;
+        if (!result) {
+            throw `Result with id ${id} doesn't exist!`;
         }
 
-        result = await db.Quiz.destroy({ where: { id } });
+        result = await db.Result.destroy({where: {id}});
 
-        res.status(200).send(result);
+        return result;
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });;
+        return null;
     }
 }
