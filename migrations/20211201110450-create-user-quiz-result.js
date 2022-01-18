@@ -2,9 +2,14 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('UserQuizResults', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
+      },
       userId: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         allowNull: false,
         references: {
           model: {
@@ -15,7 +20,6 @@ module.exports = {
       },
       quizId: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         allowNull: false,
         references: {
           model: {
@@ -26,7 +30,6 @@ module.exports = {
       },
       resultId: {
         type: Sequelize.INTEGER,
-        primaryKey: true,
         allowNull: false,
         references: {
           model: {

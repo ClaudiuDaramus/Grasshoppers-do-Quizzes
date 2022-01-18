@@ -14,64 +14,57 @@ module.exports.getCategoryById = async (id) => {
     return await db.Category.findByPk(id);
 }
 
-module.exports.createCategory = async (req, res) => {
-    const { title } = req.body;
+module.exports.createCategory = async (args, context) => {
+    const { title } = args;
 
     try {
         const newCategory = await db.Category.create({
             title
         });
 
-        res.status(201).send(newCategory);
+        return newCategory;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.updateCategory = async (req, res) => {
-    const id = req.params.id;
-    const { title } = req.body;
+module.exports.updateCategory = async (args, context) => {
+    const { id, title } = args;
 
     try {
-        const category = await db.Category.findByPk(id);
+        let category = await db.Category.findByPk(id);
 
         if(!category) {
             throw `Category with id ${id} doesn't exist!`;
         }
 
-        category = await db.Category.update({
+        await db.Category.update({
             title,
         }, { where: { id } });
 
-        res.status(200).send(category);
+        return await db.Category.findByPk(id);
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.deleteCategory = (req, res) => {
-    const { id } = req.params.id;
+module.exports.deleteCategory = async (args, context) => {
+    const {id} = args;
 
     try {
-        const category = await db.Category.findByPk(id);
+        let category = await db.Category.findByPk(id);
 
-        if(!category) {
+        if (!category) {
             throw `Category with id ${id} doesn't exist!`;
         }
 
-        category = await db.Category.destroy({ where: { id } });
+        category = await db.Category.destroy({where: {id}});
 
-        res.status(200).send(category);
+        return category;
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }

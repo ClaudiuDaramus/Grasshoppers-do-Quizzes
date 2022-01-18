@@ -14,8 +14,24 @@ module.exports.getQuizById = async (id) => {
     return await db.Quiz.findByPk(id);
 }
 
-module.exports.createQuiz = async (req, res) => {
-    const { name, description, userId } = req.body;
+module.exports.getQuizzesByTag = async (tagId) => {
+    const tag = await db.Tag.findByPk(tagId);
+    if (!tag){
+        throw new Error(`Tag with id ${tagId} doesn't exist!`);
+    }
+    return await tag.getQuizzes();
+}
+
+module.exports.getQuizzesByCategory = async (categoryId) => {
+    const category = await db.Category.findByPk(categoryId);
+    if (!category){
+        throw new Error(`Category with id ${categoryId} doesn't exist!`);
+    }
+    return await category.getQuizzes();
+}
+
+module.exports.createQuiz = async (args, context) => {
+    const { name, description, userId } = args;
 
     try {
         const newQuiz = await db.Quiz.create({
@@ -24,18 +40,15 @@ module.exports.createQuiz = async (req, res) => {
             userId
         });
 
-        res.status(201).send(newQuiz);
+        return newQuiz;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.addTagToQuiz = async (req, res) => {
-    const quizId = req.params.quizId;
-    const tagId = req.params.tagId;
+module.exports.addTagToQuiz = async (args, context) => {
+    const {quizId, tagId} = args;
 
     try {
         const quiz = await db.Quiz.findByPk(quizId);
@@ -54,23 +67,15 @@ module.exports.addTagToQuiz = async (req, res) => {
         const updatedQuiz = await db.Quiz.findByPk(quizId);
         const updatedQuizsTags = await updatedQuiz.getTags();
 
-        const response = {
-        ...updatedQuiz.toJSON(),
-        tags: updatedQuizsTags,
-        }
-
-        res.status(201).send(response);
+        return updatedQuizsTags;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.addCategoryToQuiz = async (req, res) => {
-    const quizId = req.params.quizId;
-    const categoryId = req.params.categoryId;
+module.exports.addCategoryToQuiz = async (args, context) => {
+    const {quizId, categoryId} = args;
 
     try {
         const quiz = await db.Quiz.findByPk(quizId);
@@ -89,51 +94,41 @@ module.exports.addCategoryToQuiz = async (req, res) => {
         const updatedQuiz = await db.Quiz.findByPk(quizId);
         const updatedQuizsCategories = await updatedQuiz.getCategories();
 
-        const response = {
-        ...updatedQuiz.toJSON(),
-        categorys: updatedQuizsCategories,
-        }
-
-        res.status(201).send(response);
+        return updatedQuizsCategories;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.updateQuiz = async (req, res) => {
-    const id = req.params.id;
-    const { name, description, userId } = req.body;
+module.exports.updateQuiz = async (args, context) => {
+    const { id, name, description, userId } = args;
 
     try {
-        const quiz = await db.Quiz.findByPk(id);
+        let quiz = await db.Quiz.findByPk(id);
 
         if(!quiz) {
             throw `Quiz with id ${id} doesn't exist!`;
         }
 
-        quiz = await db.Quiz.update({
+        await db.Quiz.update({
             name,
             description,
             userId
         }, { where: { id } });
 
-        res.status(200).send(quiz);
+        return await db.Quiz.findByPk(id);
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null
     }
 }
 
-module.exports.deleteQuiz = async (req, res) => {
-    const { id } = req.params.id;
+module.exports.deleteQuiz = async (args, context) => {
+    const { id } = args;
 
     try {
-        const quiz = await db.Quiz.findByPk(id);
+        let quiz = await db.Quiz.findByPk(id);
 
         if(!quiz) {
             throw `Quiz with id ${id} doesn't exist!`;
@@ -141,11 +136,9 @@ module.exports.deleteQuiz = async (req, res) => {
 
         quiz = await db.Quiz.destroy({ where: { id } });
 
-        res.status(200).send(quiz);
+        return quiz;
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });;
+        return null;
     }
 }
