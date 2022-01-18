@@ -1,4 +1,3 @@
-const { GraphQLString, GraphQLNonNull } = require('graphql')
 const { hash } = require('../../crypt/hash')
 const db = require('../../models')
 const userType = require('../types/userType')
