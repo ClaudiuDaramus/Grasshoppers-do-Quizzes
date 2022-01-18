@@ -1,11 +1,9 @@
-const { GraphQLString, GraphQLNonNull, GraphQLObjectType, GraphQLID } = require('graphql')
-const categoryType = require('../types/categoryType')
-const db = require('../../models');
-const repo = require('../../repository/quiz');
+const { GraphQLString } = require('graphql')
 const addCategoryToQuizInputType = require('../inputTypes/addCategoryToQuizInputType');
+const {addCategoryToQuiz} = require("../../repository/quiz");
 
 module.exports = {
-    addCategorytoQuiz: {
+    addCategoryToQuiz: {
         type: GraphQLString,
         args: {
             addCategoryToQuizInput: {
@@ -13,7 +11,7 @@ module.exports = {
             }
         },
         resolve: async (source, args, context) => {
-                repo.addCategorytoQuiz(args.addCategoryToQuizInput, context)
+                await addCategoryToQuiz(args.addCategoryToQuizInput, context)
                 return "successful"
         }
     },

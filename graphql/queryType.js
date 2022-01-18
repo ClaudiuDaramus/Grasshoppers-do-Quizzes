@@ -5,7 +5,6 @@ const {
     GraphQLList,
     GraphQLID,
 } = require('graphql');
-const db = require('../models');
 
 const loginResultType = require('./types/loginResultType')
 const login = require('../repository/login')
@@ -13,12 +12,12 @@ const quizType = require("./types/quizType")
 const resultType = require("./types/resultType")
 const categoryType = require("./types/categoryType")
 const tagType = require("./types/tagType")
-const repocat = require("../repository/category")
-const repotag = require("../repository/tag")
-const repoquiz = require("../repository/quiz")
-const reporesult = require("../repository/result");
-const repouserquizrez = require("../repository/userquizresult");
-const userquizresultType = require('./types/userquizresultType');
+const userQuizResultType = require('./types/userQuizResultType');
+const {getAllQuizzes, getQuizzesByTag, getQuizzesByCategory, getQuizById} = require("../repository/quiz");
+const {getAllResults, getResultById} = require("../repository/result");
+const {getAllCategories, getCategoryById} = require("../repository/category");
+const {getAllTags, getTagById} = require("../repository/tag");
+const {getAllUserQuizResults, getUserQuizResultById} = require("../repository/userQuizResult");
 
 
 const queryType = new GraphQLObjectType({
@@ -36,11 +35,11 @@ const queryType = new GraphQLObjectType({
             quizzes: {
                 type: new GraphQLList(quizType),
                 resolve: async () => {
-                    return await repoquiz.getAllQuizzes();
+                    return await getAllQuizzes();
                 }
 
             },
-            findquizzesbytag: {
+            findQuizzesByTag: {
                 type: new GraphQLList(quizType),
                 args: {
                     id: {
@@ -48,11 +47,11 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }, context) => {
-                    return repoquiz.getQuizzesByTag(id)
+                    return getQuizzesByTag(id)
                 }
 
             },
-            findquizzesbycategory: {
+            findQuizzesByCategory: {
                 type: new GraphQLList(quizType),
                 args: {
                     id: {
@@ -60,7 +59,7 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }, context) => {
-                    return repoquiz.getQuizzesByCategory(id)
+                    return getQuizzesByCategory(id)
                 }
 
             },
@@ -72,13 +71,13 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }, context) => {
-                    return await repoquiz.getQuizById(id);
+                    return await getQuizById(id);
                 }
             },
             results: {
                 type: new GraphQLList(resultType),
                 resolve: async () => {
-                    return await reporesult.getAllResults();
+                    return await getAllResults();
                 }
 
             },
@@ -90,13 +89,13 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }, result) => {
-                    return await reporesult.getResultById(id);
+                    return await getResultById(id);
                 }
             },
             categories: {
                 type: new GraphQLList(categoryType),
                 resolve: async () => {
-                    return await repocat.getAllCategories();
+                    return await getAllCategories();
                 }
 
             },
@@ -108,13 +107,13 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }) => {
-                    return await repocat.getCategoryById(id);
+                    return await getCategoryById(id);
                 }
             },
             tags: {
                 type: new GraphQLList(tagType),
                 resolve: async () => {
-                    return await repotag.getAllTags();
+                    return await getAllTags();
                 }
 
             },
@@ -126,24 +125,24 @@ const queryType = new GraphQLObjectType({
                     }
                 },
                 resolve: async (source, { id }, context) => {
-                    return await repotag.getTagById(id);
+                    return await getTagById(id);
                 }
             },
-            userquizresults: {
-                type: new GraphQLList(userquizresultType),
+            userQuizResults: {
+                type: new GraphQLList(userQuizResultType),
                 resolve: async () => {
-                    return await repouserquizrez.getAllUserQuizResults();
+                    return await getAllUserQuizResults();
                 }
             },
-            userquizresult: {
-                type: userquizresultType,
+            userQuizResult: {
+                type: userQuizResultType,
                 args: {
                     id: {
                         type: new GraphQLNonNull(GraphQLID),
                     }
                 },
                 resolve: async (source, { id }, context) => {
-                    return await repouserquizrez.getUserQuizResultById(id);
+                    return await getUserQuizResultById(id);
                 }
             }
         }

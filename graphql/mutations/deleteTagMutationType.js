@@ -1,9 +1,6 @@
-const { GraphQLString, GraphQLNonNull, GraphQLObjectType, GraphQLID } = require('graphql')
-const tagType = require('../types/tagType')
-const db = require('../../models');
-const createTagInputType = require('../inputTypes/createTagInputType');
-const updateTagInputType = require('../inputTypes/updateTagInputType');
+const { GraphQLString, GraphQLNonNull, GraphQLID } = require('graphql')
 const repo = require('../../repository/tag');
+const {deleteTag} = require("../../repository/tag");
 
 
 module.exports = {
@@ -17,7 +14,7 @@ module.exports = {
         resolve: async (source, args, context) => {
             const tagId = args.id;
             try{
-                repo.deleteTag(tagId, context)
+                await deleteTag(tagId, context)
                 return "successful"
             }
             catch(error){

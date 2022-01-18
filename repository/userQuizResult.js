@@ -10,9 +10,7 @@ module.exports.getAllUserQuizResults = async () => {
 }
 
 module.exports.getUserQuizResultById = async (id) => {
-    var test =  await db.UserQuizResult.findByPk(id);
-    console.log(test)
-    return test;
+    return await db.UserQuizResult.findByPk(id);
 }
 
 module.exports.createUserQuizResult = async (args, context) => {
@@ -47,7 +45,7 @@ module.exports.createUserQuizResult = async (args, context) => {
 }
 
 module.exports.addCompletedQuiz = async (args, context) => {
-    const { userId, quizId, responseList } = args;
+    const { userId, quizId, responseIDList } = args;
 
     try {
         let user = await db.User.findByPk(userId);
@@ -62,11 +60,11 @@ module.exports.addCompletedQuiz = async (args, context) => {
             throw new Error(`Quiz with id ${quizId} doesn't exist!`);
         }
 
-        responseList.map( async (response) => {
-            let databaseResponse = await db.Response.findByPk(response.id);
+        responseIDList.map( async (responseID) => {
+            let databaseResponse = await db.Response.findByPk(responseID);
 
             if(!databaseResponse) {
-                throw new Error(`Response with id ${response.id} doesn't exist!`);
+                throw new Error(`Response with id ${responseID} doesn't exist!`);
             }
         })
 
@@ -74,10 +72,11 @@ module.exports.addCompletedQuiz = async (args, context) => {
 
         let frequencyList = new Array(resultList.length).fill(0);
 
-        responseList.map(async response => {
+        for(let i = 0; i < responseIDList.length; i++) {
+            let response = await db.Response.findByPk(responseIDList[i]);
             let result = await response.getResult();
             frequencyList[result.id]++;
-        });
+        }
 
         let resultId = frequencyList.indexOf(Math.max(...frequencyList));
 
@@ -102,9 +101,9 @@ module.exports.updateUserQuizResult = async (args, context) => {
 
         await db.UserQuizResult.update({
             userId, quizId, resultId,
-        }, { where: { userId, quizId, resultId } });
+        }, { where: { id } });
 
-        return await db.UserQuizResult.findByPk(userId, quizId, resultId);
+        return await db.UserQuizResult.findByPk(id);
     } catch (e) {
         console.error(e);
         return null;
@@ -121,9 +120,7 @@ module.exports.deleteUserQuizResult = async (args, context) => {
             throw `UserQuizResult doesn't exist!`;
         }
 
-        userQuizResult = await db.UserQuizResult.destroy({ where: { id } });
-
-        return userQuizResult;
+        return await db.UserQuizResult.destroy({ where: { id } });
     } catch (e) {
         console.error(e);
         return null;
