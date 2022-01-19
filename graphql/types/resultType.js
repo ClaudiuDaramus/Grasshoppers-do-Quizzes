@@ -1,15 +1,25 @@
-const { GraphQLID, GraphQLString, GraphQLObjectType, GraphQLNonNull } = require('graphql')
 
+const { GraphQLID, GraphQLString, GraphQLObjectType, GraphQLNonNull } = require('graphql');
+const quizType = require('./quizType');
 const resultType = new GraphQLObjectType({
-  name: "Result",
-  fields: () => {
-    return {
-      id: { type: GraphQLNonNull(GraphQLID) },
-      title: { type: GraphQLNonNull(GraphQLString) },
-      description: { type: GraphQLNonNull(GraphQLString) },
-      quizId: { type: GraphQLNonNull(GraphQLID) }
-    }
-  }
-})
+    name: "Result",
+    fields: () => ({
+        id: {
+            type: new GraphQLNonNull(GraphQLID)
+        },
+        title: {
+            type: new GraphQLNonNull(GraphQLString)
+        },
+        description: {
+            type: new GraphQLNonNull(GraphQLString)
+        },
+        relatedQuiz: {
+            type: new GraphQLNonNull(quizType),
+            resolve: async (source) => {
+                
+            }
+        }
+    })
+});
 
-module.exports = resultType
+module.exports = resultType;

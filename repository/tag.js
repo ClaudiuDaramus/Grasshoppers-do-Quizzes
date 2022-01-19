@@ -7,7 +7,7 @@ module.exports.getAllTags = async () => {
     } catch (error) {
         console.error('Something went wrong');
         return null;
-    } 
+    }
 }
 
 module.exports.getTagById = async (id) => {
@@ -22,56 +22,49 @@ module.exports.createTag = async (req, res) => {
             title
         });
 
-        res.status(201).send(newTag);
+        return newTag;
     } catch (error) {
         console.error(error);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.updateTag = async (req, res) => {
-    const id = req.params.id;
-    const { title } = req.body;
+module.exports.updateTag = async (args, context) => {
+    const { id, title } = args;
 
     try {
-        const tag = await db.Tag.findByPk(id);
+        let tag = await db.Tag.findByPk(id);
 
         if(!tag) {
             throw `Tag with id ${id} doesn't exist!`;
         }
 
-        tag = await db.Tag.update({
+        await db.Tag.update({
             title,
         }, { where: { id } });
 
-        res.status(200).send(tag);
+        return await db.Tag.findByPk(id);
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }
 
-module.exports.deleteTag = (req, res) => {
-    const { id } = req.params.id;
+module.exports.deleteTag = async (args, context) => {
+    const {id} = args;
 
     try {
-        const tag = await db.Tag.findByPk(id);
+        let tag = await db.Tag.findByPk(id);
 
-        if(!tag) {
+        if (!tag) {
             throw `Tag with id ${id} doesn't exist!`;
         }
 
-        tag = await db.Tag.destroy({ where: { id } });
+        tag = await db.Tag.destroy({where: {id}});
 
-        res.status(200).send(tag);
+        return tag;
     } catch (e) {
         console.error(e);
-        res.send({
-            error: "Something went wrong",
-        });
+        return null;
     }
 }

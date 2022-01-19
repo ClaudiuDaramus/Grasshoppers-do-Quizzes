@@ -13,6 +13,7 @@ module.exports = {
       const quizId = Math.floor(Math.random() * (allQuizzes.length - 1));
       const resultId = Math.floor(Math.random() * (allResults.length - 1));
       res.push({
+        id: i,
         userId,
         quizId,
         resultId,

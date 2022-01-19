@@ -1,18 +1,14 @@
-
 const { GraphQLID, GraphQLString, GraphQLObjectType, GraphQLNonNull } = require('graphql');
-const quizType = new GraphQLObjectType({
-    name: "Quiz",
+const tagType = new GraphQLObjectType({
+    name: "Tag",
     fields: () => ({
         id: {
             type: new GraphQLNonNull(GraphQLID)
         },
-        name: {
-            type: new GraphQLNonNull(GraphQLString)
-        },
-        description: {
+        title: {
             type: new GraphQLNonNull(GraphQLString)
         },
     })
 });
 
-module.exports = quizType;
+module.exports = tagType;
