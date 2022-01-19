@@ -5,7 +5,7 @@ async function authorize(req, res, next) {
   const header = req.get("Authorization")
   if (!header) {
     console.log("No user or token")
-    res.status(401)
+    next()
     return
   }
   try {
