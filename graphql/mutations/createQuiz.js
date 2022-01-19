@@ -1,6 +1,6 @@
 const db = require('../../models')
 const quizInputType = require('../inputTypes/createQuizInputType')
-const quizType = require('../types/quizType')
+const quizType = require('../types/createQuizType')
 const createDbQuiz = require('../../repository/quiz').createQuiz
 module.exports = {
   createQuiz: {

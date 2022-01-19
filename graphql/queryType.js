@@ -148,6 +148,6 @@ const queryType = new GraphQLObjectType({
         }
     }
   }
-})
+)
 
 module.exports = queryType

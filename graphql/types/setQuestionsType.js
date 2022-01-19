@@ -1,7 +1,7 @@
 const {GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLNonNull, GraphQLList} = require('graphql')
 
 const responseType = new GraphQLObjectType({
-  name: "Response",
+  name: "SetQuestionsResponse",
   fields: () => {
     return {
       title: {type: GraphQLNonNull(GraphQLString)},
@@ -11,7 +11,7 @@ const responseType = new GraphQLObjectType({
 })
 
 const questionType = new GraphQLObjectType({
-  name: "Question",
+  name: "SetQuestionsQuestion",
   fields: () => {
     return {
       title: {type: GraphQLNonNull(GraphQLString)},

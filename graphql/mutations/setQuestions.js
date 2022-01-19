@@ -10,9 +10,10 @@ module.exports = {
       setQuestionsInput: {
         type: setQuestionsInputType
       }
+    },
+    resolve: async (_, {setQuestionsInput: {quizId, questions}}, context) => {
+      return await setQuestions(quizId, questions, context.user.id)
     }
   },
-  resolve: async (_, {setQuestionsInput: {quizId, questions}}, context) => {
-    return await setQuestions(quizId, questions, context.user.id)
-  }
+  
 }
