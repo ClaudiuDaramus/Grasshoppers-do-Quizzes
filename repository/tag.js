@@ -14,8 +14,8 @@ module.exports.getTagById = async (id) => {
     return await db.Tag.findByPk(id);
 }
 
-module.exports.createTag = async (req, res) => {
-    const { title } = req.body;
+module.exports.createTag = async (args, context) => {
+    const { title } = args;
 
     try {
         const newTag = await db.Tag.create({

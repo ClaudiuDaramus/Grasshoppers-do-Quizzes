@@ -3,6 +3,9 @@ const { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } = require("graph
 const updateTagInputType = new GraphQLInputObjectType({
   name: 'updateTagInput',
   fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+    },
     title: {
       type: GraphQLString,
     },
