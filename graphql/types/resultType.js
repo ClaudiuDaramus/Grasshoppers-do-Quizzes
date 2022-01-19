@@ -6,7 +6,8 @@ const resultType = new GraphQLObjectType({
     return {
       id: { type: GraphQLNonNull(GraphQLID) },
       title: { type: GraphQLNonNull(GraphQLString) },
-      description: { type: GraphQLNonNull(GraphQLString) }
+      description: { type: GraphQLNonNull(GraphQLString) },
+      quizId: { type: GraphQLNonNull(GraphQLID) }
     }
   }
 })

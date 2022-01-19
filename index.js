@@ -8,7 +8,7 @@ const authorize = require('./middleware/authorize')
 const app = express();
 app.use(express.json())
 
-app.use("/graphql", /* authorize, */ graphqlHTTP(async (req, res, params) => {
+app.use("/graphql", authorize, graphqlHTTP(async (req, res, params) => {
     return {
         schema,
         graphiql: true,

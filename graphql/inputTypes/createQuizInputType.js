@@ -13,9 +13,6 @@ const resultInputType = new GraphQLInputObjectType({
 const createQuizInputType = new GraphQLInputObjectType({
   name: 'CreateQuizInput',
   fields: {
-    userId: {
-      type: new GraphQLNonNull(GraphQLID),
-    },
     description: {
       type: new GraphQLNonNull(GraphQLString),
     },

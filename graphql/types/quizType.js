@@ -1,5 +1,6 @@
 const {GraphQLString, GraphQLNonNull, GraphQLObjectType, GraphQLList, GraphQLID} = require('graphql')
 const questionType = require('./questionType')
+const resultType = require('./resultType')
 
 const quizType = new GraphQLObjectType({
   name: "QuizType",
@@ -7,7 +8,8 @@ const quizType = new GraphQLObjectType({
     return {
       id: {type: GraphQLNonNull(GraphQLID)},
       name: { type: GraphQLNonNull(GraphQLString)},
-      questions: { type: GraphQLList(questionType) }
+      questions: { type: GraphQLList(questionType) },
+      results: { type: GraphQLList(resultType)}
     }
   }
 })

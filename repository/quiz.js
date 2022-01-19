@@ -1,3 +1,4 @@
+const resultType = require('../graphql/types/resultType');
 const db = require('../models');
 
 module.exports.getAllQuizzes = async () => {
@@ -17,24 +18,78 @@ module.exports.getQuizById = async (id) => {
 //Because having "fake" result ids in the responses object, in order to create a quiz you will
 //need createQuiz and setQuestions
 module.exports.createQuiz = async (quiz, results) => {
-  console.log("Enter create quiz")
   const { name, description, userId } = quiz
-  const dbQuiz = db.Quiz.build({ name, description })
-  const user = await db.User.findByPk(userId)
-  await dbQuiz.setUser(user)
-  await dbQuiz.save()
-
-  const dbResults = []
+  const dbQuiz = db.Quiz.build({ name, description, userId })
+  const q = await dbQuiz.save()
+  let dbResults = []
+  let dbPromises = []
   results.forEach(async (result) => {
     const dbResult = db.Result.build({
       title: result.title,
-      description: result.description
+      description: result.description,
+      quizId: dbQuiz.id
     })
-    dbResult.setQuiz(dbQuiz)
-    await dbResult.save()
-    dbResults.push(dbResult)
+    const savePromise = dbResult.save()
+    dbPromises.push(savePromise)
+    const r = await savePromise
+    dbResults.push(r)
   });
-  return { dbQuiz, results: dbResults  }
+  await Promise.all(dbPromises)
+  return { dbQuiz: q, dbResults }
+}
+
+module.exports.setQuestions = async (quizId, questions, userId) => {
+  const dbQuiz = await db.Quiz.findByPk(quizId, { include: { model: db.Question, required: true } })
+  if(dbQuiz.userId != userId)
+  {
+    throw "Invalid user"
+  }
+  deletePromises = []
+  dbQuiz.questions.forEach(question => {
+    deletePromises.push(question.destroy())
+  })
+  await Promise.all(deletePromises)
+  questionPromises = []
+  dbQuestions = []
+  questions.forEach(async (question) => {
+    insertResponsesPromises = []
+    dbResponses = []
+    const questionEntry = db.build({
+      title: question.title,
+      description: question.description
+    })
+    const dbQuestion = await dbQuestion.save()
+    question.responses.forEach(async (response) => {
+      const responseEntry = db.Response.build({
+        questionId: dbQuestion.id,
+        description: response.description,
+        resultId: response.resultId
+      })
+      insertPromise = responseEntry.save()
+      insertResponsesPromises.push(insertPromise)
+      const dbResponse = await insertPromise
+      dbResponses.push({
+        id: dbResponse.id,
+        title: response.title,
+        questionId: dbQuestion.id,
+        resultId: response.resultId
+      })
+    })
+    const questionPromise = Promise.all(insertResponsePromises)
+    questionPromises.push(questionPromise)
+    await questionPromise
+    dbQuestions.push(
+      {
+        title: question.title,
+        id: dbQuestion.id,
+        description: question.description,
+        quizId: question.quizId,
+        results: dbResponses
+      }
+    )
+  })
+  await Promise.all(questionPromises)
+  return dbQuestions
 }
 
 module.exports.addTagToQuiz = async (req, res) => {
@@ -133,7 +188,7 @@ module.exports.updateQuiz = async (req, res) => {
   }
 }
 
-module.exports.deleteQuiz = async(req, res) => {
+module.exports.deleteQuiz = async (req, res) => {
   const { id } = req.params.id;
 
   try {
