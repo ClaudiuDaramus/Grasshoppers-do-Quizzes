@@ -1,12 +1,10 @@
-const { GraphQLString, GraphQLNonNull, GraphQLObjectType, GraphQLID } = require('graphql')
-const categoryType = require('../types/categoryType')
-const db = require('../../models');
-const repo = require('../../repository/quiz');
+const { GraphQLString } = require('graphql')
 const addTagToQuizInputType = require('../inputTypes/addTagToQuizInputType');
+const {addTagToQuiz} = require("../../repository/quiz");
 
 
 module.exports = {
-    addTagtoQuiz: {
+    addTagToQuiz: {
         type: GraphQLString,
         args: {
             addTagToQuizInput: {
@@ -14,7 +12,7 @@ module.exports = {
             }
         },
         resolve: async (source, args, context) => {
-                repo.addTagToQuiz(args.addTagToQuizInput, context)
+                await addTagToQuiz(args.addTagToQuizInput, context)
                 return "successful"
             }
         

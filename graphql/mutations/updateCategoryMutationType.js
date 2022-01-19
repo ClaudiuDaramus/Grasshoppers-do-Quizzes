@@ -1,9 +1,6 @@
-const { GraphQLString, GraphQLNonNull, GraphQLObjectType, GraphQLID } = require('graphql')
 const categoryType = require('../types/categoryType')
-const db = require('../../models');
-const createCategoryInputType = require('../inputTypes/createCategoryInputType');
 const updateCategoryInputType = require('../inputTypes/updateCategoryInputType');
-const repo = require('../../repository/category');
+const {updateCategory} = require("../../repository/category");
 
 
 module.exports = {
@@ -17,7 +14,7 @@ module.exports = {
         },
         resolve: async (source, args, context) => {
             try{
-                return repo.updateCategory(args.updateCategoryInput, context)
+                return updateCategory(args.updateCategoryInput, context)
             }
             catch(error){
                 console.error(error);
